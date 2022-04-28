@@ -19,16 +19,13 @@ function RestPass() {
           passwordConfirmation: value,
         }
       )
-      .then((res) => {
+      .then(() => {
         setMessage("Your password has been reset.");
-        console.log(res);
       })
-      .catch((error) => {
+      .catch(() => {
         setMessage("An error occurred, try again");
-        console.log(error);
       });
   };
-  console.log(value);
   return (
     <div className="h-screen bg-orange-400">
       <div className="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
