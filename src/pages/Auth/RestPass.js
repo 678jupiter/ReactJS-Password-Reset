@@ -1,17 +1,8 @@
 import axios from "axios";
-import React, { useState } from "react";
+import { useState } from "react";
 import { css } from "@emotion/react";
 import { useSearchParams } from "react-router-dom";
 import ClimbingBoxLoader from "react-spinners/ClipLoader";
-import {
-  IconButton,
-  Input,
-  InputAdornment,
-  InputLabel,
-  makeStyles,
-} from "@material-ui/core";
-
-import { Visibility, VisibilityOff } from "@material-ui/icons";
 const override = css`
   display: block;
   margin: 0 auto;
@@ -21,12 +12,13 @@ const override = css`
 function RestPass() {
   let [searchParams] = useSearchParams();
   const code = searchParams.get("code");
+  const [value, setValue] = useState("");
   const [message, setMessage] = useState("");
   const [submitting, setSubmitting] = useState(false);
   let [loading] = useState(true);
   let [color] = useState("#ffffff");
   const isFormValid = () => {
-    if (values.password === "") {
+    if (value === "") {
       setMessage("All fields are required!");
       setSubmitting(false);
       return false;
@@ -48,8 +40,8 @@ function RestPass() {
           `https://${process.env.REACT_APP_API_KEY}/api/auth/reset-password`,
           {
             code: code,
-            password: values.password,
-            passwordConfirmation: values.password,
+            password: value,
+            passwordConfirmation: value,
           }
         )
         .then(() => {
@@ -66,30 +58,8 @@ function RestPass() {
       setMessage("An error has occurred, try again");
     }
   };
-  const useStyles = makeStyles(() => ({
-    noBorder: {
-      border: "none",
-    },
-  }));
-  const classes = useStyles();
-
   console.clear();
-  const [values, setValues] = React.useState({
-    password: "",
-    showPassword: false,
-  });
 
-  const handleClickShowPassword = () => {
-    setValues({ ...values, showPassword: !values.showPassword });
-  };
-
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
-
-  const handlePasswordChange = (prop) => (event) => {
-    setValues({ ...values, [prop]: event.target.value });
-  };
   return (
     <div className="h-screen bg-orange-400">
       <div className="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -101,7 +71,7 @@ function RestPass() {
               alt="logo"
             />
             <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-              Password Reset.
+              Add a new password for your account
             </h2>
           </div>
           <form className="mt-8 space-y-6" action="#" method="POST">
@@ -110,42 +80,16 @@ function RestPass() {
                 <label htmlFor="password" className="sr-only">
                   Password
                 </label>
-
-                <InputLabel
-                  htmlFor="standard-adornment-password"
-                  className=" mb-2"
-                >
-                  Enter your new Password
-                </InputLabel>
-
-                <Input
-                  variant="outlined"
-                  margin="dense"
-                  disableUnderline={true}
-                  autoFocus
-                  multiline={false}
-                  classes={{ notchedOutline: classes.input }}
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  // autocomplete="current-password"
+                  required
                   className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                  type={values.showPassword ? "text" : "password"}
-                  onChange={handlePasswordChange("password")}
-                  value={values.password}
-                  InputProps={{
-                    classes: { notchedOutline: classes.noBorder },
-                  }}
-                  endAdornment={
-                    <InputAdornment position="end">
-                      <IconButton
-                        onClick={handleClickShowPassword}
-                        onMouseDown={handleMouseDownPassword}
-                      >
-                        {values.showPassword ? (
-                          <Visibility />
-                        ) : (
-                          <VisibilityOff />
-                        )}
-                      </IconButton>
-                    </InputAdornment>
-                  }
+                  placeholder="Password"
+                  value={value}
+                  onChange={(e) => setValue(e.target.value)}
                 />
               </div>
             </div>
