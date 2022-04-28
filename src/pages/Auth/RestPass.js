@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 function RestPass() {
-  let [searchParams, setSearchParams] = useSearchParams();
+  let [searchParams] = useSearchParams();
   const code = searchParams.get("code");
   const [value, setValue] = useState("");
   const [message, setMessage] = useState("");
