@@ -15,8 +15,8 @@ function RestPass() {
   const [value, setValue] = useState("");
   const [message, setMessage] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  let [loading, setLoading] = useState(true);
-  let [color, setColor] = useState("#ffffff");
+  let [loading] = useState(true);
+  let [color] = useState("#ffffff");
   const isFormValid = () => {
     if (value === "") {
       setMessage("All fields are required!");
@@ -33,6 +33,7 @@ function RestPass() {
       return;
     }
     setSubmitting(true);
+    setMessage("");
     try {
       axios
         .post(
