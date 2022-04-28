@@ -1,31 +1,63 @@
 import axios from "axios";
 import { useState } from "react";
+import { css } from "@emotion/react";
 import { useSearchParams } from "react-router-dom";
+import ClimbingBoxLoader from "react-spinners/ClipLoader";
+const override = css`
+  display: block;
+  margin: 0 auto;
+  border-color: "#6721D3";
+`;
 
 function RestPass() {
   let [searchParams] = useSearchParams();
   const code = searchParams.get("code");
   const [value, setValue] = useState("");
   const [message, setMessage] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  let [loading, setLoading] = useState(true);
+  let [color, setColor] = useState("#ffffff");
+  const isFormValid = () => {
+    if (value === "") {
+      setMessage("All fields are required!");
+      setSubmitting(false);
+      return false;
+    }
+
+    return true;
+  };
 
   const send = (event) => {
     event.preventDefault();
-    axios
-      .post(
-        `https://${process.env.REACT_APP_API_KEY}/api/auth/reset-password`,
-        {
-          code: code,
-          password: value,
-          passwordConfirmation: value,
-        }
-      )
-      .then(() => {
-        setMessage("Your password has been reset.");
-      })
-      .catch(() => {
-        setMessage("An error occurred, try again");
-      });
+    if (!isFormValid()) {
+      return;
+    }
+    setSubmitting(true);
+    try {
+      axios
+        .post(
+          `https://${process.env.REACT_APP_API_KEY}/api/auth/reset-password`,
+          {
+            code: code,
+            password: value,
+            passwordConfirmation: value,
+          }
+        )
+        .then(() => {
+          console.clear();
+          setMessage("Your password has been reset.");
+          setSubmitting(false);
+        })
+        .catch(() => {
+          setMessage("An error occurred, try again");
+          console.clear();
+          setSubmitting(false);
+        });
+    } catch (error) {
+      setMessage("An error occurred, try again");
+    }
   };
+  console.clear();
   return (
     <div className="h-screen bg-orange-400">
       <div className="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -34,7 +66,7 @@ function RestPass() {
             <img
               className="mx-auto h-12 w-auto"
               src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg"
-              alt="Workflow"
+              alt="logo"
             />
             <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
               Add a new password for your account
@@ -65,29 +97,38 @@ function RestPass() {
               </h2>
             </div>
             <div>
-              <button
-                type="submit"
-                onClick={send}
-                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              >
-                <span className="absolute left-0 inset-y-0 flex items-center pl-3">
-                  {/* <!-- Heroicon name: solid/lock-closed --> */}
-                  <svg
-                    className="h-5 w-5 text-indigo-500 group-hover:text-indigo-400"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                    aria-hidden="true"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </span>
-                Reset
-              </button>
+              {submitting ? (
+                <ClimbingBoxLoader
+                  color={color}
+                  loading={loading}
+                  css={override}
+                  size={30}
+                />
+              ) : (
+                <button
+                  type="submit"
+                  onClick={send}
+                  className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                >
+                  <span className="absolute left-0 inset-y-0 flex items-center pl-3">
+                    {/* <!-- Heroicon name: solid/lock-closed --> */}
+                    <svg
+                      className="h-5 w-5 text-indigo-500 group-hover:text-indigo-400"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </span>
+                  Reset
+                </button>
+              )}
             </div>
           </form>
         </div>
