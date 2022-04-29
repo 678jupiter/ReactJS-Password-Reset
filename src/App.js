@@ -4,11 +4,11 @@ import RestPass from "./pages/Auth/RestPass";
 import { NotFound } from "./pages/NotFound";
 import { GlobalDebug } from "./utils/wsgi";
 function App() {
-  useEffect(() => {
-    (process.env.NODE_ENV === "production" ||
-      process.env.REACT_APP_ENV === "STAGING") &&
-      GlobalDebug(false);
-  }, []);
+  // useEffect(() => {
+  //   (process.env.NODE_ENV === "production" ||
+  //     process.env.REACT_APP_ENV === "STAGING") &&
+  //     GlobalDebug(false);
+  // }, []);
   return (
     <Routes>
       <Route path="/" element={<RestPass />} />

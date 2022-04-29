@@ -41,44 +41,40 @@ function RestPass() {
     }
     setSubmitting(true);
     setMessage("");
-    try {
-      axios
-        .post(
-          `https://${process.env.REACT_APP_API_KEY}/api/auth/reset-password`,
-          {
-            code: code,
-            password: passValue.password,
-            passwordConfirmation: passValue.value,
-          }
-        )
-        .then(() => {
-          console.clear();
-          setMessage("Your password has been reset.");
-          setSubmitting(false);
-        })
-        .catch(() => {
-          setMessage("An error has occurred, try again");
-          console.clear();
-          setSubmitting(false);
-        });
-    } catch (error) {
-      setMessage("An error has occurred, try again");
-    }
+    axios
+      .post(
+        `https://${process.env.REACT_APP_API_KEY}/api/auth/reset-password`,
+        {
+          code: code,
+          password: passValue.password,
+          passwordConfirmation: passValue.value,
+        }
+      )
+      .then(() => {
+        //  console.clear();
+        setMessage("Your password has been reset.");
+        setSubmitting(false);
+      })
+      .catch(() => {
+        setMessage("An error has occurred, try again");
+        //console.clear();
+        setSubmitting(code);
+        console.log(passValue.value);
+        console.log(passValue.password);
+        console.log(passValue.value);
+      });
   };
-  console.clear();
+  // console.clear();
 
   const [passValue, setPassValue] = useState({
     password: "",
     showPassword: false,
   });
 
-  
   const [values, setValues] = useState({
     password: "",
     showPassword: false,
   });
-
-
 
   const handlePasswordChange = (prop) => (event) => {
     setPassValue({ ...passValue, [prop]: event.target.value });
