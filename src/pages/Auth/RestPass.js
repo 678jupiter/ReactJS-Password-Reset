@@ -47,7 +47,7 @@ function RestPass() {
         {
           code: code,
           password: passValue.password,
-          passwordConfirmation: passValue.value,
+          passwordConfirmation: passValue.password,
         }
       )
       .then(() => {
@@ -61,7 +61,7 @@ function RestPass() {
         setSubmitting(code);
         console.log(passValue.value);
         console.log(passValue.password);
-        console.log(passValue.value);
+        console.log(passValue.password);
       });
   };
   // console.clear();
