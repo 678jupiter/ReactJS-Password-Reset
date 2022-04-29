@@ -3,6 +3,8 @@ import { useState } from "react";
 import { css } from "@emotion/react";
 import { useSearchParams } from "react-router-dom";
 import ClimbingBoxLoader from "react-spinners/ClipLoader";
+import { EyeIcon, EyeOffIcon } from "@heroicons/react/solid";
+
 const override = css`
   display: block;
   margin: 0 auto;
@@ -12,14 +14,18 @@ const override = css`
 function RestPass() {
   let [searchParams] = useSearchParams();
   const code = searchParams.get("code");
-  const [value, setValue] = useState("");
   const [message, setMessage] = useState("");
   const [submitting, setSubmitting] = useState(false);
   let [loading] = useState(true);
   let [color] = useState("#ffffff");
   const isFormValid = () => {
-    if (value === "") {
+    if (passValue.password === "") {
       setMessage("All fields are required!");
+      setSubmitting(false);
+      return false;
+    }
+    if (passValue.password.length < 6) {
+      setMessage("Password should not be less than six characters.");
       setSubmitting(false);
       return false;
     }
@@ -29,6 +35,7 @@ function RestPass() {
 
   const send = (event) => {
     event.preventDefault();
+    setMessage("");
     if (!isFormValid()) {
       return;
     }
@@ -40,8 +47,8 @@ function RestPass() {
           `https://${process.env.REACT_APP_API_KEY}/api/auth/reset-password`,
           {
             code: code,
-            password: value,
-            passwordConfirmation: value,
+            password: passValue.password,
+            passwordConfirmation: passValue.value,
           }
         )
         .then(() => {
@@ -60,6 +67,29 @@ function RestPass() {
   };
   console.clear();
 
+  const [passValue, setPassValue] = useState({
+    password: "",
+    showPassword: false,
+  });
+
+  
+  const [values, setValues] = useState({
+    password: "",
+    showPassword: false,
+  });
+
+
+
+  const handlePasswordChange = (prop) => (event) => {
+    setPassValue({ ...passValue, [prop]: event.target.value });
+  };
+
+  //
+  const handleClickShowPassword = () => {
+    setPassValue({ ...passValue, showPassword: !passValue.showPassword });
+    setValues({ ...values, showPassword: !values.showPassword });
+  };
+
   return (
     <div className="h-screen bg-orange-400">
       <div className="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -71,26 +101,33 @@ function RestPass() {
               alt="logo"
             />
             <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-              Add a new password for your account
+              Password reset.
             </h2>
           </div>
           <form className="mt-8 space-y-6" action="#" method="POST">
             <div className="rounded-md shadow-sm -space-y-px">
               <div>
-                <label htmlFor="password" className="sr-only">
-                  Password
-                </label>
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  // autocomplete="current-password"
-                  required
-                  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                  placeholder="Password"
-                  value={value}
-                  onChange={(e) => setValue(e.target.value)}
-                />
+                <div className="password_2 block pt-6 relative">
+                  <div className="eye_div">
+                    <input
+                      className="input block border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm focus:border-pitch-black  py-3 px-3 w-full  "
+                      type={values.showPassword ? "text" : "password"}
+                      onChange={handlePasswordChange("password")}
+                      value={passValue.password}
+                      placeholder="Password"
+                    />
+                    <div
+                      className="icon_button absolute right-4 top-10"
+                      onClick={handleClickShowPassword}
+                    >
+                      {passValue.showPassword ? (
+                        <EyeIcon className="h-6 font-extralight" />
+                      ) : (
+                        <EyeOffIcon className="h-6 font-extralight" />
+                      )}
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
             <div>
@@ -133,6 +170,14 @@ function RestPass() {
               )}
             </div>
           </form>
+
+          <div className="login_page">
+            <main className="login_main max-w-lg mx-auto ">
+              <div className="login_form pt-16">
+                <form action=""></form>
+              </div>
+            </main>
+          </div>
         </div>
       </div>
     </div>
