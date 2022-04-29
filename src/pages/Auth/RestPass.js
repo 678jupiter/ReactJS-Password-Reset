@@ -57,11 +57,7 @@ function RestPass() {
       })
       .catch(() => {
         setMessage("An error has occurred, try again");
-        //console.clear();
-        setSubmitting(code);
-        console.log(passValue.value);
-        console.log(passValue.password);
-        console.log(passValue.password);
+        setSubmitting(false);
       });
   };
   // console.clear();
